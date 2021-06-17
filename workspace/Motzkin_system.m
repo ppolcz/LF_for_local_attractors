@@ -190,7 +190,18 @@ s = N.ny;
 md = Pid.ny;
 sd = Nd.ny;
 
+% %{
+%% Ez mar konkretan a cikkhez kell
+
+N_sym = sym(P_affine_annihilator_for_LFR(Pi,x_lfr,'sym',true));
+pcz_latex_v7(N_sym)
+
+
+% Nd_affmat = paffmat(Nd,x);
+% pcz_num2str_latex_output(Nd_affmat.Theta')
+
 %%
+%}
 
 % 2019.12.28. (december 28, szombat), 02:40
 [Y_v,~,Y_fci,Y_proj] = P_ndnorms_of_X(x_lim * blkdiag(0,1));

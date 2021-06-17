@@ -1,0 +1,146 @@
+%!TEX root = Main.tex
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  __  __                          _
+% |  \/  |_   _   _ __   __ _  ___| | ____ _  __ _  ___  ___   _
+% | |\/| | | | | | '_ \ / _` |/ __| |/ / _` |/ _` |/ _ \/ __| (_)
+% | |  | | |_| | | |_) | (_| | (__|   < (_| | (_| |  __/\__ \  _
+% |_|  |_|\__, | | .__/ \__,_|\___|_|\_\__,_|\__, |\___||___/ (_)
+%         |___/  |_|                         |___/
+
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{setspace}
+\usepackage{enumitem}
+
+\pdfminorversion=4
+
+% - - - - - - - - - - - - - - - - - - - - - - - -
+
+% Review packages
+\usepackage{soul}
+\DeclareRobustCommand{\hlcyan}[1]{{\sethlcolor{cyan}\hl{#1}}}
+
+% \usepackage{showframe}
+% \usepackage[status=draft,layout=margin]{fixme}
+
+% - - - - - - - - - - - - - - - - - - - - - - - -
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools}
+% Dependencies: ?
+% Macros - mathtools: dcases
+% Further definitions based on this package:
+%
+% [1] The following makes possible to create verticales lines inside matrix environments using the optional parameter [cc|c]
+\makeatletter
+\renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
+    \hskip -\arraycolsep
+    \let\@ifnextchar\new@ifnextchar
+    \array{#1}}
+\makeatother
+
+% - - - - - - - - - - - - - - - - - - - - - - - -
+
+% \usepackage{kbordermatrix}% http://www.hss.caltech.edu/~kcb/TeX/kbordermatrix.sty
+\usepackage{blkarray}
+\usepackage{physics}
+% Dependencies: xparse, amsmath
+% Macros: ..qty, pdv, dv,
+% Further definitions based on this package:
+%
+% [1] \pqty should be adopt to the new matrix rules: \pmqty[]
+\DeclareDocumentCommand\pmqty{ l m }{\begin{pmatrix}#1 #2 \end{pmatrix}}
+%
+% [2] Operators
+\DeclareDocumentCommand\He{ l m }{\mathrm{He}\qty#1{#2}}
+\DeclareDocumentCommand\Ve{ l m }{\mathbf{Ve}\pqty#1{#2}}
+\DeclareDocumentCommand\Co{ l m }{\mathbf{Co}\pqty#1{#2}}
+\DeclareDocumentCommand\Gr{ l m }{\mathbf{Gr}\pqty#1{#2}}
+\DeclareDocumentCommand\ls{ l m }{\mathrm{Ls}\qty#1{#2}}
+\def\vr{\varrho}
+%
+% [3] Linear fraction transformation symbols
+\DeclareDocumentCommand{\Fu}{ s l >{\SplitArgument{4}{,}} m }{\IfBooleanTF{#1}{\sFimpl#2{u}#3}{\Fimpl#2{u}#3}}
+\DeclareDocumentCommand{\Fl}{ s l >{\SplitArgument{4}{,}} m }{\IfBooleanTF{#1}{\sFimpl#2{l}#3}{\Fimpl#2{l}#3}}
+\DeclareDocumentCommand{\Fimpl}{lmmmmmm}{\mathcal F_{#2}\qty#1{ \pmqty[c|c]{ #3 & #4 \\\hline #5 & #6 }, #7}}
+\DeclareDocumentCommand{\sFimpl}{lmmmmmm}{\mathcal F_{#2}\qty#1{ \spmqty{ #3 & #4 \\ #5 & #6 }, #7}}
+
+% - - - - - - - - - - - - - - - - - - - - - - - -
+
+% \let\proof\relax \let\endproof\relax
+\usepackage{amsthm}
+% Dependencies: ?
+% Macros: ...
+% Further definitions based on this package:
+%
+% [1] New environment definitions
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{Def}[theorem]{Definition}
+\newtheorem{prop}[theorem]{Proposition}
+%
+\theoremstyle{definition}
+\newtheorem{remark}{Remark}
+\newtheorem{example}{Example}
+\newtheorem{problem}{Problem}
+\newtheorem{assumptions}{Assumptions}
+\newtheorem{assumption}{Assumption}
+
+% - - - - - - - - - - - - - - - - - - - - - - - -
+
+\usepackage{url}
+\usepackage[
+    hyperfootnotes=false,
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue,
+    anchorcolor=blue,
+    pagebackref=false]{hyperref}
+
+% - - - - - - - - - - - - - - - - - - - - - - - -
+
+% \usepackage{listings}
+\usepackage{verbatim}
+
+% - - - - - - - - - - - - - - - - - - - - - - - -
+
+\usepackage{xparse}
+\usepackage[breakable,skins]{tcolorbox}
+\newlength{\pczoversizelength}
+\setlength{\pczoversizelength}{8pt}
+\DeclareDocumentEnvironment{pcb}{ s O{} O{blue} d<> D(){5} D(){20} D(){50} }
+{
+
+    \begin{tcolorbox}[
+    enhanced,
+    breakable,
+    colback=\IfNoValueTF{#4}{#3}{#4}!#5,
+    colbacktitle=#3!#6,
+    colframe=#3!#7,
+    subtitle style={boxrule=0.4pt,colback=#3!20},
+    boxrule=1pt, arc=4pt, left=0.5\pczoversizelength, right=0.5\pczoversizelength, top=4pt, bottom=4pt,
+    boxsep=0pt,
+    toptitle=4pt,
+    bottomtitle=4pt,
+    fonttitle=\bfseries,
+    coltitle=black,
+    oversize,
+    % =\pczoversizelength,
+    #2]
+}
+{
+    \end{tcolorbox}
+}
+
+\let\oldintercal\intercal
+\def\intercal{{\protect\scalebox{0.7}{\protect\scalebox{0.8}[1]{$\top$}}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newenvironment{nocomment}{}{}
