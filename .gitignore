@@ -156,24 +156,24 @@ tbxmanager
 
 
 # Document files [git:NO, sync:YES]
-*.txt
-*.out
-*.pdf
+# *.txt
+# *.out
+# *.pdf
 *.djvu
 *.odt
 *.ods
 *.odg
 *.doc
 *.docx
-*.xls
-*.xlsx
-*.csv
+# *.xls
+# *.xlsx
+# *.csv
 # Libreoffice lock files:
 .~*#
 # Digitalis repjegy kiterjesztese:
 *.ics
 # Readme files
-*.md
+# *.md
 
 # Packages
 *.7z
