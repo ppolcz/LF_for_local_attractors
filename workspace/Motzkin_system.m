@@ -1,13 +1,10 @@
 %% local_Motzkin_system [VEDETT]
 %
-%  File: local_Motzkin_system.m
-%  Directory: 7_ftools/workspace/07_DOA_positive_systems
 %  Author: Peter Polcz (ppolcz@gmail.com)
-%
 %  Created on 2019. November 11. (2019a)
 %
-% FUTTATASOK:
-%  - 2021.03.02. (március  2, kedd), 12:17 [minden OK]
+% EXECUTIONS:
+% - 2024.10.03. (October  3, Thursday), 11:14 (Matlab R2023b)
 
 fname = pcz_mfilename;
 cd(fname.dir)
@@ -18,8 +15,8 @@ save(savename,'fname')
 %%
 
 G_reset(01)
-%       │└─ verbosity (0:false, 1:true, 2:do not change)
-%       └── scope depth (0:reset, 1:reset if not set)
+%        verbosity (0:false, 1:true, 2:do not change)
+%        scope depth (0:reset, 1:reset if not set)
 
 He = he;
 I = @(varargin) eye(varargin{:});
@@ -29,7 +26,7 @@ P_init(12)
 
 %%
 
-% 2021.03.02. (március  2, kedd), 12:15
+% 2021.03.02. (mrcius  2, kedd), 12:15
 x_lim = [
     -1 1
     -1 1
@@ -489,7 +486,7 @@ print(pngname,'-dpng','-r500')
 
 return 
 
-%% Ezt sietve csak a command-line-ba írtam, szedd össze ami érdekes:
+%% Ezt sietve csak a command-line-ba rtam, szedd ssze ami rdekes:
 
 contour(xx1,xx2,V_num,[1 1])
 contour(xx1,xx2,V_num,[1 2])

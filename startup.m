@@ -19,13 +19,19 @@ addpath([ROOT filesep 'ftools'])
 addpath([ROOT filesep 'workspace'])
 P_init
 
-
-mkdir('tbxmanager')
+if ~exist('tbxmanager','dir')
+    mkdir('tbxmanager')
+end
 cd tbxmanager
 
-websave('tbxmanager.m', 'http://www.tbxmanager.com/tbxmanager.m');
-tbxmanager
-savepath
+if ~exist('tbxmanager.m','file')
+    websave('tbxmanager.m', 'http://www.tbxmanager.com/tbxmanager.m');
+    tbxmanager
+    savepath
+end
 
-tbxmanager install yalmip
+if ~exist('toolboxes/yalmip','dir')
+    tbxmanager install yalmip
+end
 tbxmanager restorepath
+cd ..

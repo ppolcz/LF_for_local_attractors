@@ -1,22 +1,18 @@
 %% 
 %  
-%  File: limit_cycle.m
-%  Directory: 7_ftools/workspace/07_DOA_positive_systems
 %  Author: Peter Polcz (ppolcz@gmail.com) 
-%  
 %  Created on 2021. March 25. (2020b)
 %  Minor review on 2021. June 17. (2021a)
 %
-% FUTTATASOK:
-% - 2021.03.04. (március  4, csütörtök), 12:47
-% - 2021.06.17. (június 17, csütörtök), 10:44 (Matlab R2021a)
+% EXECUTIONS:
+% - 2024.10.03. (October  3, Thursday), 11:14 (Matlab R2023b)
 
 %%
 % Automatically generated stuff
 
 G_reset(01)
-%       │└─ verbosity (0:false, 1:true, 2:do not change)
-%       └── scope depth (0:reset, 1:reset if not set)
+%        verbosity (0:false, 1:true, 2:do not change)
+%        scope depth (0:reset, 1:reset if not set)
 
 He = he;
 I = @(varargin) eye(varargin{:});
@@ -31,7 +27,7 @@ c1 = 0.1;
 c2 = 1;
 c3 = 1;
 
-% 2021.02.25. (február 25, csütörtök), 14:29
+% 2021.02.25. (februr 25, cstrtk), 14:29
 Radius = 2;
 x_lim = [
     -1 1
@@ -233,13 +229,13 @@ pcz_num2str_latex(P);
 
 dV = Pid' * He( Ed'*P*Ad ) * Pid;
 
-% 2021.02.26. (február 26, péntek), 09:03
+% 2021.02.26. (februr 26, pntek), 09:03
 % p = Pi_sym'*P_store*Pi_sym;
 % p_fh = matlabFunction(p);
 % p_num = p_fh(xx1,xx2);
 % p_level = value(tau0) / alpha0;
 
-% 2021.02.26. (február 26, péntek), 09:15
+% 2021.02.26. (februr 26, pntek), 09:15
 V = Pi_sym'*P*Pi_sym;
 V_fh = matlabFunction(V);
 V_num = V_fh(xx1,xx2);

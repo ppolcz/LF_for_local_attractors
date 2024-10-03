@@ -1,22 +1,16 @@
 %%
-%  File: limit_cycle_vdp_10.m
-%  Directory: 0_VEDETT/28_2021_03_02_attractoros_cikkbe
 %  Author: Peter Polcz (ppolcz@gmail.com)
-%
 %  Created on 2020. January 09. (2019b)
 %
-% FUTTATASOK:
-% - 2020.01.09. (január  9, csütörtök), 23:56
-% - 2021.02.25. (február 25, csütörtök), 15:07
-% - 2021.02.26. (február 26, péntek), 09:53    (Garantált régió iteratívan)
-% - 2021.06.17. (június 17, csütörtök), 11:48 (Matlab R2021a)
+% EXECUTIONS:
+% - 2024.10.03. (October  3, Thursday), 11:14 (Matlab R2023b)
 
 %%
 % Automatically generated stuff
 
 G_reset(01)
-%       │└─ verbosity (0:false, 1:true, 2:do not change)
-%       └── scope depth (0:reset, 1:reset if not set)
+%        verbosity (0:false, 1:true, 2:do not change)
+%        scope depth (0:reset, 1:reset if not set)
 
 He = he;
 I = @(varargin) eye(varargin{:});
@@ -26,7 +20,7 @@ P_init(12)
 
 %% model
 
-% 2021.02.25. (február 25, csütörtök), 14:29
+% 2021.02.25. (februr 25, cstrtk), 14:29
 x_lim = [
     -4 4
     -5 5
@@ -194,7 +188,7 @@ Pid_sym = sym(Pid);
 
 dV = Pid' * He( Ed'*P*Ad ) * Pid;
 
-% 2021.02.26. (február 26, péntek), 09:15
+% 2021.02.26. (februr 26, pntek), 09:15
 V = Pi_sym'*P*Pi_sym;
 V_fh = matlabFunction(V);
 V_num = V_fh(xx1,xx2);

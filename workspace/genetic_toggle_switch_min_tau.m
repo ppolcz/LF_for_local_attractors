@@ -1,29 +1,24 @@
 %% 28. Genetic toggle switch [VEDETT]
 %
-%  File: genetic_toggle_switch.m
-%  Directory: 7_ftools/workspace/07_DOA_positive_systems
 %  Author: Peter Polcz (ppolcz@gmail.com)
-%
 %  Created on 2020. January 04. (2019b)
 %  Minor review on 2021. June 17. (2021a)
 %
-% Tested on:
-% - 2020.09.01. (szeptember  1, kedd), 11:26 [Butterfly function - SZEP] 
-% - 2021.03.02. (március  2, kedd), 09:42
-% - 2021.06.17. (június 17, csütörtök), 10:34 (Matlab R2021a)
+% EXECUTIONS:
+% - 2024.10.03. (October  3, Thursday), 11:14 (Matlab R2023b)
 
 %%
 % Automatically generated stuff
 
 G_reset(01)
-%       │└─ verbosity (0:false, 1:true, 2:do not change)
-%       └── scope depth (0:reset, 1:reset if not set)
+%        verbosity (0:false, 1:true, 2:do not change)
+%        scope depth (0:reset, 1:reset if not set)
 
 He = he;
 I = @(varargin) eye(varargin{:});
 O = @(varargin) zeros(varargin{:});
 
-% 2021.03.02. (március  2, kedd), 09:42
+% 2021.03.02. (mrcius  2, kedd), 09:42
 P_init(12.01)
 
 %%
@@ -260,8 +255,8 @@ end
 Qf = @(alpha) P + blkdiag(-alpha,O(m-1));
 for i = 1:X_NrF
 
-    % 2021.03.08. (március  8, hétfő), 16:33
-    % Szimbolikusan is működik, de gyorsabb numerikusan
+    % 2021.03.08. (mrcius  8, htf), 16:33
+    % Szimbolikusan is mkdik, de gyorsabb numerikusan
         
     Verbosity = G_VERBOSE(0);
     [S_Fi,Pi_Fi,iS_Fi,Ker_Fi] = P_mingen_for_LFR(Pi,'proj',proj{i});
