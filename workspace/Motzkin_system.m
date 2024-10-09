@@ -6,6 +6,10 @@
 % EXECUTIONS:
 % - 2024.10.03. (October  3, Thursday), 11:14 (Matlab R2023b)
 
+P_init(12)
+
+%%
+
 fname = pcz_mfilename;
 cd(fname.dir)
 
@@ -21,8 +25,6 @@ G_reset(01)
 He = he;
 I = @(varargin) eye(varargin{:});
 O = @(varargin) zeros(varargin{:});
-
-P_init(12)
 
 %%
 

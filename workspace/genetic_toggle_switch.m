@@ -2,7 +2,7 @@
 %
 %  Author: Peter Polcz (ppolcz@gmail.com)
 %  Created on 2020. January 04. (2019b)
-%  Minor review on 2021. June 17. (2021a)
+%  Minor revision on 2021. June 17. (2021a)
 %
 % EXECUTIONS:
 % - 2024.10.03. (October  3, Thursday), 11:14 (Matlab R2023b)
@@ -11,8 +11,8 @@
 % Automatically generated stuff
 
 G_reset(01)
-%        verbosity (0:false, 1:true, 2:do not change)
-%        scope depth (0:reset, 1:reset if not set)
+%       |L- verbosity (0:false, 1:true, 2:do not change)
+%       L-- scope depth (0:reset, 1:reset if not set)
 
 He = he;
 I = @(varargin) eye(varargin{:});

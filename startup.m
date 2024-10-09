@@ -35,3 +35,5 @@ if ~exist('toolboxes/yalmip','dir')
 end
 tbxmanager restorepath
 cd ..
+
+P_init
