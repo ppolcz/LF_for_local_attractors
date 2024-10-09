@@ -12,6 +12,9 @@ function varargout = pcz_generateBeginEndTimer
 %
 %%
 
+% 2021.12.25. (december 25, szombat), 03:18
+rng shuffle
+
 var = ['Timer_' pcz_generateString(4, 1) ];
 beginning = sprintf('%s = pcz_dispFunctionName;\n', var);
 ending = sprintf('\npcz_dispFunctionEnd(%s);\nclear TMP_*\n', var);

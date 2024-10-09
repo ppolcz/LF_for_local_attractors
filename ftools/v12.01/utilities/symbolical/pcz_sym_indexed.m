@@ -1,4 +1,4 @@
-function [ret] = pcz_sym_indexed(name, nr, startindex)
+function [ret] = pcz_sym_indexed(name,nr,~)
 %% 
 %  
 %  File: pcz_sym_indexed.m
@@ -6,15 +6,13 @@ function [ret] = pcz_sym_indexed(name, nr, startindex)
 %  Author: Peter Polcz (ppolcz@gmail.com) 
 %  
 %  Created on 2018. October 23.
+%  Reviewed on 2021. December 09. (2021b) [startindex = 1!]
 %
 
 %%
 
 narginchk(2,3)
-
-if nargin <= 2
-    startindex = 1;
-end
+startindex = 1;
 
 %%
 

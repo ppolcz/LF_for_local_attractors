@@ -11,7 +11,7 @@ function pcz_createFunction(fn, varargin)
 
 args = '';
 if ~isempty(varargin)
-    args = ['(' strjoin(varargin, ', ') ')'];
+    args = ['(' strjoin(varargin, ',') ')'];
 end
 
 f = pcz_resolvePath(fn);

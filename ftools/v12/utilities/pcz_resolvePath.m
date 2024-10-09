@@ -18,7 +18,6 @@ ret.relpath = '';
 ret.dir = '';
 ret.path = '';
 ret.type = '';
-ret.version = '2016.02.19. Friday, 00:43:33 [pcz_resolvePath]';
 
 ROOT = getenv('ROOT');
 

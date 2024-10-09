@@ -1,4 +1,8 @@
-function [ret] = pcz_generateString(l, num)
+function [ret] = pcz_generateString(l,num)
+arguments
+    l = 8;
+    num = true;
+end
 %% 
 %  
 %  file:   pcz_generateString.m

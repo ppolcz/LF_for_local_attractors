@@ -50,7 +50,7 @@ end
 
 active = matlab.desktop.editor.getActive;
 if pversion >= 2016 && contains(name,'LiveEditor') && ~isempty(active)
-    fparts = pcz_resolvePath(active.Filename);
+    fparts = pcz_mfilename(active.Filename);
     name = fparts.bname;
 end
 

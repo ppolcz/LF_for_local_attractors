@@ -17,6 +17,14 @@ try
     editor.setCaretPosition(0);
     editor.insertTextAtCaret(ret);
     editor.appendText(sprintf('\nend'));    
+
+
+    document = matlab.desktop.editor.getActive;
+    selection = document.Selection;
+    linenr = selection(1);
+    document.insertTextAtPositionInLine(ret,linenr,1);    
+
+
 catch ex
     getReport(ex)
 end

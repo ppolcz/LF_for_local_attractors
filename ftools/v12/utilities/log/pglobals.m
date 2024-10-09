@@ -9,6 +9,8 @@ function [G,globscode_] = pglobals
 %% ROOT
 
 ROOT = getenv('ROOT');
+% assert(~isempty(ROOT) && exist(ROOT,'dir'), ...
+%     'Root directory is not assigned well, first of all, run ./startup.m')
 
 G = struct;
 G.ROOT = ROOT;

@@ -34,6 +34,9 @@ for i = 1:nr
     o.var = varargin{i};
     if o.round > 0 
         o.var = round(o.var,o.round);
+
+        % 2021.12.01. (december  1, szerda), 14:14
+        o.var(abs(o.var) < 10^(-2*o.round)) = 0;
     end        
 
     str = [ pref pcz_num2str_fixed(o.var,o.format, o.del1, o.del2, o.pref, o.beginning, o.ending) ];

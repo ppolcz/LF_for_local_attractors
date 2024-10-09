@@ -5,26 +5,22 @@ function [ret] = snp_begin_end_scope(doch,event)
 %  Author: Peter Polcz (ppolcz@gmail.com) 
 %  
 %  Created on 2016.01.31. Sunday, 15:04:58
+%  Reviewed on 2021. November 18. (2021b)
 %
 
 [a,b] = pcz_generateBeginEndTimer;
 
 try
-    active = matlab.desktop.editor.getActive;
-    editor = active.JavaEditor;
-    
-    linenr = editor.getLineNumber+1;
-    lbegin = editor.lineAndColumnToPosition(linenr,0);
-    editor.setCaretPosition(lbegin);
-    
+    document = matlab.desktop.editor.getActive;
+    selection = document.Selection;
+    linenr = selection(1);
+
     b = strrep(b, '%%', '');
     b = regexprep(b, 'clear .*', '');
     b = strrep(b, newline, '');
     
-    editor.insertTextAtCaret(a);
+    document.insertTextAtPositionInLine(a,linenr,1);
     clipboard('copy',b);
-    
-    % editor.appendText(sprintf('%s\n', b));
 catch ex
     getReport(ex)
 end

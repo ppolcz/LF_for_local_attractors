@@ -40,7 +40,10 @@ f = subs([
     sigma*(x2 - x1)
     x1*(rho - x3) - x2
     x1*x2 - beta*x3
-    ],x,x*Scale_x+Offset_x);
+    ],x,x*Scale_x+Offset_x)/Scale_x;
+
+f_fh_cell = cellfun(@(f) {matlabFunction(f,'vars',x)}, num2cell(f));
+f_lfr_cell = cellfun(@(f) {f(x_lfr_cell{:})},f_fh_cell);
 
 % %%
 
@@ -71,32 +74,59 @@ zlabel z
 
 %%
 
-Pi = pcz_monomials(x,0:3);
-Pi_fh = matlabFunction(Pi,'vars',x,'Optimize',false);
-Pi_lfr = Pi_fh(x_lfr_cell{:});
-Pi_plfr = plfr(Pi_lfr);
-m = numel(Pi);
+x1 = x_lfr_cell{1};
+x2 = x_lfr_cell{2};
+x3 = x_lfr_cell{3};
+Pi_mon = [
+    1
+    x1
+    x2
+    x3
+    ];
+Pi_den = 1 + x1^2 + x2^2 + x3^2;
+Pi_num = [
+    1
+    x1
+    x2
+    x3
+    x1^2
+    x2^2
+    x3^2
+    x1*x2
+    x2*x3
+    x3*x1
+    % x1^3
+    % x1^2*x2
+    % x1^2*x3
+    ];
 
-Pid = pcz_monomials(x,0:5);
-Pid_fh = matlabFunction(Pid,'vars',x,'Optimize',false);
-Pid_lfr = Pid_fh(x_lfr_cell{:});
-Pid_plfr = plfr(Pid_lfr);
-md = numel(Pid);
+Pi_lfr = [
+    Pi_mon 
+    Pi_num/Pi_den
+    ];
 
-N = P_affine_annihilator(Pi,x,'sym',1);
-Nd = P_affine_annihilator(Pid,x,'sym',1);
+% Pi_fh = matlabFunction(Pi,'vars',x,'Optimize',false);
+% Pi_lfr = Pi_fh(x_lfr_cell{:});
+Pi = plfr(Pi_lfr);
+m = size(Pi_lfr,1);
 
-% Compute Ad: dPi = Ad*Pid
-dPi = jacobian(Pi,x)*f;
-Fd = sym('F',[m md]);
-[c,~] = pcoeffs(dPi - Fd*Pid,x);
-[AA,bb] = equationsToMatrix(horzcat(c{:}),Fd(:));
-Ad = double(reshape(AA\bb,size(Fd)));
+dPi = Pi.diff(x_lfr_cell,f_lfr_cell);
 
-pcz_symzero(dPi - Ad*Pid, 'dot pi(x) = Ad pi(x)');
+Pid0 = plfr([ Pi_lfr ; dPi.lfrtbx_obj ]);
+J = [ I(m) O(m) ];
+Jd = [ O(m) I(m) ];
 
-% Pi = Ed*Pid
-Ed = [ eye(m) zeros(m,md-m) ];
+Pid1 = Pid0.generatePI;
+
+[Sd,Pid,iSd,Kerd] = P_mingen_for_LFR(Pid1);
+
+Ed = J*[ Pid0.A Pid0.B ]*Sd;
+Ad = Jd*[ Pid0.A Pid0.B ]*Sd;
+
+N = P_affine_annihilator_for_LFR(Pi,x_lfr);
+Nd = P_affine_annihilator_for_LFR(Pid,x_lfr);
+
+pcz_fhzero_report(dPi - Ad*Pid,x,1e-7, 'dot pi(x) = Ad pi(x)');
 
 [s,m] = size(N);
 [sd,md] = size(Nd);
@@ -125,8 +155,8 @@ P = sdpvar(m);
 L = sdpvar(m,s,'full');
 Ld = sdpvar(md,sd,'full');
 
-CONS = [ 0 <= c2 , c2 <= c3*0.99999];
-OBJ = [];
+CONS = [ 0.00001 <= c2 , c2 <= c3*0.0199999];
+OBJ = c2;
 
 for i = 1:X_NrV
     xi = X_v(i,:)';
@@ -148,7 +178,7 @@ Qf = @(alpha) P + blkdiag(-alpha,O(m-1));
 for i = 1:X_NrF
     
     Verbosity = G_VERBOSE(0);
-    [S_Fi,Pi_Fi,iS_Fi,Ker_Fi] = P_mingen_for_LFR(Pi_plfr,'proj',proj{i});
+    [S_Fi,Pi_Fi,iS_Fi,Ker_Fi] = P_mingen_for_LFR(Pi,'proj',proj{i});
     N_Fi = P_affine_annihilator_for_LFR(Pi_Fi,x_lfr,'proj',proj{i});
     G_VERBOSE(Verbosity);
     
@@ -173,20 +203,41 @@ c2 = double(c2);
 L = double(L);
 P = double(P);
 Ld = double(Ld);
-Pi_sym = sym(Pi);
-Pid_sym = sym(Pid);
 
-V = Pi_sym'*P*Pi_sym;
-dV = Pid' * He( Ed'*P*Ad ) * Pid;
-Pd = alpha0*He( Ed'*P*Ad ) + Ed'*P*Ed - blkdiag(c2,zeros(md-1));
-Pd_aug = alpha0*He( Ed'*P*Ad + Ld*sym(Nd) ) + Ed'*P*Ed - blkdiag(c2,zeros(md-1));
-dV_V_1 = Pid' * Pd * Pid;
+d = @(fun) jacobian(fun,x)*f;
 
-V_fh = matlabFunction(V);
-dV_fh = matlabFunction(dV);
-dV_V_1_fh = matlabFunction(dV_V_1);
-Pid_fh = matlabFunction(Pid);
-Pd_aug_fh = matlabFunction(Pd_aug);
+phi0 = sym(plfr(Pi_mon));
+dphi0 = d(phi0);
+
+phi = sym(plfr(Pi_num));
+dphi = d(phi);
+
+q = sym(plfr(Pi_den));
+dq = jacobian(q) * f;
+
+m0 = numel(phi0);
+m1 = numel(phi);
+assert(size(P,1) == m0+m1);
+Q = P(1:m0,1:m0);
+R = P(1:m0,m0+1:m0+m1);
+S = P(m0+1:m0+m1,m0+1:m0+m1);
+
+p0 = phi0.' * Q * phi0;
+p1 = phi0.' * R * phi;
+p2 = phi.' * S * phi;
+
+dp0 = d(p0);
+dp1 = d(p1);
+dp2 = d(p2);
+
+p0_fh = matlabFunction(p0,'vars',x);
+dp0_fh = matlabFunction(dp0,'vars',x);
+p1_fh = matlabFunction(p1,'vars',x);
+dp1_fh = matlabFunction(dp1,'vars',x);
+p2_fh = matlabFunction(p2,'vars',x);
+dp2_fh = matlabFunction(dp2,'vars',x);
+q_fh = matlabFunction(q,'vars',x);
+dq_fh = matlabFunction(dq,'vars',x);
 
 resolution = 201;
 xc = cellfun(@num2cell, num2cell(x_lim,2), 'UniformOutput', false);
@@ -195,12 +246,33 @@ lspace_cell = cellfun(@(lims) {linspace(lims{:},resolution)}, xc);
 xx = cell(1,3);
 [xx{:}] = ndgrid(lspace_cell{:});
 
-VV = V_fh(xx{:});
-dVV = dV_fh(xx{:});
-dVV_VV_1 = dV_V_1_fh(xx{:});
+pp0 = p0_fh(xx{:});
+pp1 = p1_fh(xx{:});
+pp2 = p2_fh(xx{:});
+qq = q_fh(xx{:});
+
+dpp0 = dp0_fh(xx{:});
+dpp1 = dp1_fh(xx{:});
+dpp2 = dp2_fh(xx{:});
+dqq = dq_fh(xx{:});
+
+VV = pp0 + 2*pp1 ./ qq + pp2 ./ (qq.^2);
+dVV = dpp0 + 2*(dpp1.*qq - dqq.*pp1) ./ (qq.^2)  + dpp2 ./ (qq.^2) - 2*dqq.*pp2 ./ (qq.^3);
+
+%%
+
+Version = 1;
 
 VV_half = VV;
-VV_half(xx{2} > 0 & xx{1} > 0) = NaN;
+
+switch Version
+    case 1
+        VV_half(xx{2} > 0 & xx{1} > 0) = NaN;
+    case 2
+        VV_half(xx{2} > 0 & xx{1} < 0) = NaN;
+    case 3
+        VV_half(xx{1} > xx{2}) = NaN;
+end
 
 Col = @(M) M(:);
 V_level = min([
@@ -209,7 +281,7 @@ V_level = min([
     Col(VV([1,end],:,:))
     ]);
 
-lambda = 0.01;
+lambda = 0.00001;
 c2_redef = (1-lambda)*max(VV(dVV(:) > 0)) + lambda*c2;
 
 % %%
@@ -228,7 +300,7 @@ hold on
 
 Color1 = pcz_get_plot_colors([],1);
 for x0 = [-0.1836 -0.0439 0.1971]'
-    [~,x_ode] = ode89(f_ode,[0 10],x0);
+    [~,x_ode] = ode89(f_ode,[0 100],x0);
     Pl1 = plot3(x_ode(:,1),x_ode(:,2),x_ode(:,3),'Color',Color1);
 end
 
@@ -245,7 +317,7 @@ ph_Vertices = ph.Vertices;
 ph_Faces = ph.Faces;
 set(ph,'FaceColor','red','EdgeColor','none', 'FaceAlpha', 0.5);
 
-ph = patch(isosurface(xx{:},VV_half,c2));
+ph = patch(isosurface(xx{:},VV_half,V_level));
 ph_Vertices = ph.Vertices;
 ph_Faces = ph.Faces;
 set(ph,'FaceColor',[1 0.8431 0],'EdgeColor','none', 'FaceAlpha', 0.5);
@@ -263,9 +335,14 @@ set(ph,'FaceColor','green','EdgeColor','none', 'FaceAlpha', 0.5);
 
 axis equal
 light,
-view([102 22])
-view([0 0])
-view([-218.8627 32.9494])
+switch Version
+    case 1
+        view([152.8652 25.4689])
+    case 2
+        view([-125.7518 9.8295])
+    case 3
+        view([-125.7518 9.8295])
+end
 xlabel $x_1$ interpreter latex
 ylabel $x_2$ interpreter latex
 zlabel $x_3$ interpreter latex
@@ -281,18 +358,19 @@ Labels = Persist.latexified_labels(gca,20,'$x_1$','$x_2$','$x_3$');
 Labels{1}.VerticalAlignment = 'bottom';
 Labels{2}.VerticalAlignment = 'top';
 
-good = VV < 1;
-all = ones(size(VV));
+good = VV < c2_redef;
 
-VOLUME = prod(x_lim(:,2) - x_lim(:,1)) * ( sum(good(:))/sum(all(:)) )
+VOLUME = prod(x_lim(:,2) - x_lim(:,1)) * ( sum(good(:))/numel(VV) )
 
 % persist.print({'-dpdf'}, [ 'main_figure_pia1_' polytope '_without_legend.pdf' ])
 
 Dirname = '/home/ppolcz/_/3_docs/28_nonzero_attractor/actual/fig/Exported_from_Matlab';
-Figname = [ Dirname filesep datestr(date,29) '-Lorenz_attractor' ];
+Figname = [ Dirname filesep datestr(date,29) '-Lorenz_attractor_LFR_min_c3_View1' ];
 
 % pause(1)
 % print([Figname '.png'],'-dpng','-r500')
+
+return
 
 %%
 
@@ -315,3 +393,4 @@ Pd = alpha0*He( Ed'*P*Ad ) + Ed'*P*Ed - blkdiag(c2,zeros(md-1));
 Pid_fh(28.5,50,50)' * Pd_aug_fh(28.5,50,50) * Pid_fh(28.5,50,50)
 
 check(CONS)
+

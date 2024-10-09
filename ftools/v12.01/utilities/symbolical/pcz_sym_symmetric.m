@@ -1,4 +1,4 @@
-function P = pcz_sym_symmetric(name,n,startindex)
+function [P,p,p_idx] = pcz_sym_symmetric(name,n,~)
 %% pcz_sym_symmetric
 %  
 %  File: pcz_sym_symmetric.m
@@ -10,20 +10,17 @@ function P = pcz_sym_symmetric(name,n,startindex)
 
 %%
 
-if nargin < 3
-    startindex = 1;
-end
-
-
 nr = n*(n+1)/2;
 
-p = pcz_sym_indexed(name, nr, startindex);
+p = pcz_sym_indexed(name,nr).';
 
 U = triu(ones(n));
 
+p_idx = find(U == 1);
+
 P = sym(U);
 
-P(U == 1) = p;
+P(p_idx) = p;
 
 P = P + triu(P,1).';
 
@@ -33,6 +30,6 @@ function self_check
 %%
 % TODO: erre nem mukodik
 
-P = pcz_sym_symmetric('p',4,0)
+P = pcz_sym_symmetric('p',4)
 
 end

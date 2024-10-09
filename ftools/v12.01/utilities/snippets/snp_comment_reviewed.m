@@ -10,23 +10,24 @@ function returnval = snp_comment_reviewed(doch,event)
 %  Reviewed on 2017. August 25. [date be informative]
 %  Reviewed on 2017. September 24. [just return (.mlx)]
 %  Modified on 2018. March 03. (Modified instead of Reviewed)
+%  Reviewed on 2021. September 29. (2021b)
+%  Revised on 2022. January 05. (2021b)
 %
 
-ret = sprintf('%%  Major review on %s (%s)\n', pcz_fancyDate('informative'), version('-release'));
+ret = sprintf('%%  Revised on %s (%s)\n', pcz_fancyDate('informative'), version('-release'));
 
 try
-    active = matlab.desktop.editor.getActive;
-    editor = active.JavaEditor;
-
-    linenr = editor.getLineNumber+1;
-    lbegin = editor.lineAndColumnToPosition(linenr,0);
-    editor.setCaretPosition(lbegin);
-    editor.insertTextAtCaret(ret);    
+    document = matlab.desktop.editor.getActive;
+    selection = document.Selection;
+    linenr = selection(1);
+    document.insertTextAtPositionInLine(ret,linenr,1);    
 catch ex
     getReport(ex)
     returnval = ret;
     
-    ret = sprintf('Major review on %s (%s)', pcz_fancyDate('informative'), version('-release'));
+    disp('Error occured, but text copied to clipbord.')
+
+    ret = ret(4:end-1);
     clipboard('copy',ret);
 end
 
