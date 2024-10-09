@@ -32,7 +32,7 @@ dp_lim_c = num2cell(dp_lim,2);
 
 names = cellfun(@(i) {[name num2str(i)]}, num2cell(1:dim));
 
-p_cell = cellfun(@gss,names(:),p_nom_c,p_lim_c,dp_lim_c,'UniformOutput',false);
+p_cell = cellfun(@(name,nom,l,dl) {gss(name,nom,l,[],dl)},names(:),p_nom_c,p_lim_c,dp_lim_c);
 p = vertcat(p_cell{:});
 
 end

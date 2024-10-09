@@ -24,6 +24,7 @@ tbxmanager
 *-backup*
 *.old
 *.old2
+**/output.txt
 
 # Maven files
 *.repositories
